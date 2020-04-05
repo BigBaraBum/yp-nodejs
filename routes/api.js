@@ -12,6 +12,15 @@ router.get('/cards', (req, res) => {
 
 router.get('/users/:id', (req, res) => {
   // eslint-disable-next-line no-underscore-dangle
-  res.send(users.find((x) => x._id === req.params.id));
+  const user = users.find((x) => x._id === req.params.id);
+  if (!user) {
+    res.status(404).send({ message: 'Нет пользователя с таким id' });
+  }
+  res.send(user);
 });
+
+router.get('/:any', (req, res) => {
+  res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
+});
+
 module.exports = router;
