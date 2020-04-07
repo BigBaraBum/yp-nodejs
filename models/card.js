@@ -1,0 +1,35 @@
+const mongoose = require('mongoose');
+
+const cardchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 30
+  },
+  link: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function(v) {
+        return /https?:\/\/(www\.)?(([a-z]+\.[a-z]+)|(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}))(:\d{2,5})?([\/a-z0-9]+#?)?/.test(v);
+      }
+    }
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+    required: true
+  },
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+    default: []
+  }],
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+module.exports = mongoose.model('card', cardSchema);
