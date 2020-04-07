@@ -1,23 +1,18 @@
 const router = require('express').Router();
-const users = require('../data/users.json');
-const cards = require('../data/cards.json');
+const { createUser, getUsers, getUserById } = require('../controllers/users');
+const { createCard, getCards, deleteCardById } = require('../controllers/cards');
 
-router.get('/users', (req, res) => {
-  res.send(users);
-});
+router.get('/cards', getCards);
 
-router.get('/cards', (req, res) => {
-  res.send(cards);
-});
+router.post('/cards', createCard);
 
-router.get('/users/:id', (req, res) => {
-  const user = users.find((x) => x._id === req.params.id);
-  if (!user) {
-    res.status(404).send({ message: 'Нет пользователя с таким id' });
-  } else {
-    res.send(user);
-  }
-});
+router.delete('/cards/:cardId', deleteCardById);
+
+router.get('/users', getUsers);
+
+router.get('/users/:userId', getUserById);
+
+router.post('/users', createUser);
 
 router.get('/:any', (req, res) => {
   res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
