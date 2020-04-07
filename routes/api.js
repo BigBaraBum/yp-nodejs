@@ -1,13 +1,6 @@
 const router = require('express').Router();
 const users = require('../data/users.json');
 const cards = require('../data/cards.json');
-const mongoose = require('mongoose');
-
-mongoose.connect('mongodb://localhost:27017/mestodb', {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false
-});
 
 router.get('/users', (req, res) => {
   res.send(users);
