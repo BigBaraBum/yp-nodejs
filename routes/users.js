@@ -3,18 +3,14 @@ const {
   createUser, getUsers, getUserById, updateProfile, updateAvatar,
 } = require('../controllers/users');
 
-router.get('/users', getUsers);
+router.get('/', getUsers);
 
-router.get('/users/:userId', getUserById);
+router.get('/:userId', getUserById);
 
-router.post('/users', createUser);
+router.post('/', createUser);
 
-router.patch('/users/me', updateProfile);
+router.patch('/me', updateProfile);
 
-router.patch('/users/me/avatar', updateAvatar);
-
-router.get('/:any', (req, res) => {
-  res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
-});
+router.patch('/me/avatar', updateAvatar);
 
 module.exports = router;
