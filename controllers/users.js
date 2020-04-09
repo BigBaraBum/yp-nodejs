@@ -30,7 +30,13 @@ module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { name, about })
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      if (user) {
+        res.send({ data: user });
+      } else {
+        res.status(404).send({ message: 'Пользователь не найден' });
+      }
+    })
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
@@ -38,6 +44,12 @@ module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { avatar })
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      if (user) {
+        res.send({ data: user });
+      } else {
+        res.status(404).send({ message: 'Пользователь не найден' });
+      }
+    })
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
