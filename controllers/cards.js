@@ -16,11 +16,19 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.deleteCardById = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
-      if (card) {
-        res.send({ data: card });
-      } else {
+      if (card) { // карточка найдена
+        if (card.owner === req.user) { // пользователь создатель карточки
+          Card.findByIdAndRemove(req.params.cardId) // удаляем карточку
+            .then((deletedCard) => {
+              res.send({ data: deletedCard });
+            })
+            .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+        } else { // пользователь не создатель карточки
+          res.status(401).send({ message: 'У вас нет прав для удаления этой карточки' });
+        }
+      } else { // карточка не найдена
         res.status(404).send({ message: 'Карточка не найдена' });
       }
     })
