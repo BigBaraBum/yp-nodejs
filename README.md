@@ -1,4 +1,27 @@
 # yp-nodejs
-12 проектная работа
+13 проектная работа
 
-Version: 1.0.0
+Методы API:
+
+GET /users — возвращает всех пользователей
+
+GET /users/:userId - возвращает пользователя по _id
+
+POST /users — создаёт пользователя
+
+PATCH /users/me — обновляет профиль
+
+PATCH /users/me/avatar — обновляет аватар
+
+
+GET /cards — возвращает все карточки
+
+POST /cards — создаёт карточку
+
+DELETE /cards/:cardId — удаляет карточку по идентификатору
+
+PUT /cards/:cardId/likes — поставить лайк карточке по _id
+
+DELETE /cards/:cardId/likes — убрать лайк с карточки по _id
+
+Version: 1.0.1
