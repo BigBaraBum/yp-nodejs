@@ -24,10 +24,10 @@ module.exports.createUser = (req, res) => {
   } = req.body;
   bcrypt.hash(req.body.password, 10)
     .then((hash) => User.create({
-      name, about, avatar, email, hash,
+      name, about, avatar, email, password: hash,
     }))
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.getUsers = (req, res) => {
