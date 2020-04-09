@@ -1,5 +1,7 @@
 {
   "extends": "airbnb-base",
   "ignorePatterns": ["public"],
-  "no-underscore-dangle":  ["error", { "allow": ["_id"] }]
+  "rules": {
+    "no-underscore-dangle":  ["error", { "allow": ["_id"] }]
+  }
 }
