@@ -3,12 +3,17 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cards = require('./routes/cards.js');
 const users = require('./routes/users.js');
+const { login, createUser } = require('./controllers/users');
 
 const app = express();
 const { PORT = 3000 } = process.env;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.post('/signin', login);
+app.post('/signup', createUser);
+
 app.use((req, res, next) => {
   req.user = {
     _id: '5e8cefaab0d1134f106c5769', // Мой айди
