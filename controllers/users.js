@@ -35,7 +35,7 @@ module.exports.createUser = (req, res) => {
       if (err.name === 'MongoError' && err.code === 11000) {
         res.status(500).send({ message: `Имейл ${err.keyValue.email} уже зарегистрирован` });
       } else {
-        res.status(500).send({ message: err });
+        res.status(500).send({ message: err.message });
       }
     });
 };
@@ -43,7 +43,7 @@ module.exports.createUser = (req, res) => {
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.getUserById = (req, res) => {
@@ -55,7 +55,7 @@ module.exports.getUserById = (req, res) => {
         res.status(404).send({ message: 'Пользователь не найден' });
       }
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.updateProfile = (req, res) => {
@@ -70,7 +70,7 @@ module.exports.updateProfile = (req, res) => {
           res.status(404).send({ message: 'Пользователь не найден' });
         }
       })
-      .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+      .catch((err) => res.status(500).send({ message: err.message }));
   } else {
     res.status(401).send({ message: 'У вас нет прав для изменения данного пользователя' });
   }
@@ -89,7 +89,7 @@ module.exports.updateAvatar = (req, res) => {
           res.status(404).send({ message: 'Пользователь не найден' });
         }
       })
-      .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+      .catch((err) => res.status(500).send({ message: err.message }));
   } else {
     res.status(401).send({ message: 'У вас нет прав для изменения данного пользователя' });
   }

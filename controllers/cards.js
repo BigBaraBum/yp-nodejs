@@ -6,13 +6,13 @@ module.exports.createCard = (req, res) => {
 
   Card.create({ name, link, owner })
     .then((card) => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.deleteCardById = (req, res) => {
@@ -25,7 +25,7 @@ module.exports.deleteCardById = (req, res) => {
             .then((deletedCard) => {
               res.send({ data: deletedCard });
             })
-            .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+            .catch((err) => res.status(500).send({ message: err.message }));
         } else { // пользователь не создатель карточки
           res.status(401).send({ message: 'У вас нет прав для удаления этой карточки' });
         }
@@ -33,7 +33,7 @@ module.exports.deleteCardById = (req, res) => {
         res.status(404).send({ message: 'Карточка не найдена' });
       }
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.likeCard = (req, res) => {
@@ -45,7 +45,7 @@ module.exports.likeCard = (req, res) => {
         res.status(404).send({ message: 'Карточка не найдена' });
       }
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.dislikeCard = (req, res) => {
@@ -57,5 +57,5 @@ module.exports.dislikeCard = (req, res) => {
         res.status(404).send({ message: 'Карточка не найдена' });
       }
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
