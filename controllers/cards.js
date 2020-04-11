@@ -19,8 +19,7 @@ module.exports.deleteCardById = (req, res) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (card) { // карточка найдена
-        // eslint-disable-next-line eqeqeq
-        if (card.owner == req.user._id) { // пользователь создатель карточки
+        if (card.owner.toString() === req.user._id) { // пользователь создатель карточки
           Card.findByIdAndRemove(req.params.cardId) // удаляем карточку
             .then((deletedCard) => {
               res.send({ data: deletedCard });
