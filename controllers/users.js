@@ -22,22 +22,26 @@ module.exports.createUser = (req, res) => {
   const {
     name, about, avatar, email,
   } = req.body;
-  bcrypt.hash(req.body.password, 10)
-    .then((hash) => User.create({
-      name, about, avatar, email, password: hash,
-    }))
-    .then((user) => res.send({
-      data: {
-        id: user._id, name: user.name, about: user.about, avatar: user.avatar,
-      },
-    }))
-    .catch((err) => {
-      if (err.name === 'MongoError' && err.code === 11000) {
-        res.status(500).send({ message: `Имейл ${err.keyValue.email} уже зарегистрирован` });
-      } else {
-        res.status(500).send({ message: err.message });
-      }
-    });
+  if (req.body.password.length < 8) {
+    res.status(400).send({ message: 'Пароль должен состоять из более чем 8 символов' });
+  } else {
+    bcrypt.hash(req.body.password, 10)
+      .then((hash) => User.create({
+        name, about, avatar, email, password: hash,
+      }))
+      .then((user) => res.send({
+        data: {
+          id: user._id, name: user.name, about: user.about, avatar: user.avatar,
+        },
+      }))
+      .catch((err) => {
+        if (err.name === 'MongoError' && err.code === 11000) {
+          res.status(500).send({ message: `Имейл ${err.keyValue.email} уже зарегистрирован` });
+        } else {
+          res.status(500).send({ message: err.message });
+        }
+      });
+  }
 };
 
 module.exports.getUsers = (req, res) => {
