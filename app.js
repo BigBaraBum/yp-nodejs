@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
 const cards = require('./routes/cards.js');
 const users = require('./routes/users.js');
 const { login, createUser } = require('./controllers/users');
@@ -18,6 +19,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(helmet());
 app.use(cookieParser());
 
 app.post('/signin', login);
