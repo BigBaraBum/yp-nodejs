@@ -60,37 +60,28 @@ module.exports.getUserById = (req, res) => {
 
 module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
-  // eslint-disable-next-line eqeqeq
-  if (req.params.id == req.user._id) {
-    User.findByIdAndUpdate(req.params.id, { name, about })
-      .then((user) => {
-        if (user) {
-          res.send({ data: user });
-        } else {
-          res.status(404).send({ message: 'Пользователь не найден' });
-        }
-      })
-      .catch((err) => res.status(500).send({ message: err.message }));
-  } else {
-    res.status(401).send({ message: 'У вас нет прав для изменения данного пользователя' });
-  }
+
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+    .then((user) => {
+      if (user) {
+        res.send({ data: user });
+      } else {
+        res.status(404).send({ message: 'Пользователь не найден' });
+      }
+    })
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
-  // eslint-disable-next-line eqeqeq
-  if (req.params.id == req.user._id) {
-    User.findByIdAndUpdate(req.user._id, { avatar })
-      .then((user) => {
-        if (user) {
-          res.send({ data: user });
-        } else {
-          res.status(404).send({ message: 'Пользователь не найден' });
-        }
-      })
-      .catch((err) => res.status(500).send({ message: err.message }));
-  } else {
-    res.status(401).send({ message: 'У вас нет прав для изменения данного пользователя' });
-  }
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
+    .then((user) => {
+      if (user) {
+        res.send({ data: user });
+      } else {
+        res.status(404).send({ message: 'Пользователь не найден' });
+      }
+    })
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
