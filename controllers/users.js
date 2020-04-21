@@ -2,10 +2,11 @@ require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const CustomError = require('../errors/custom-error');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
@@ -13,17 +14,15 @@ module.exports.login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'super-secret');
       res.cookie('jwt', token, { maxAge: 604800000, httpOnly: true }).end();
     })
-    .catch((err) => {
-      res.status(401).send({ message: err.message });
-    });
+    .catch(next);
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email,
   } = req.body;
   if (req.body.password.length < 8) {
-    res.status(400).send({ message: 'Пароль должен состоять из более чем 8 символов' });
+    throw new CustomError('Пароль должен состоять из более чем 8 символов', 400);
   } else {
     bcrypt.hash(req.body.password, 10)
       .then((hash) => User.create({
@@ -36,33 +35,36 @@ module.exports.createUser = (req, res) => {
       }))
       .catch((err) => {
         if (err.name === 'MongoError' && err.code === 11000) {
-          res.status(500).send({ message: `Имейл ${err.keyValue.email} уже зарегистрирован` });
+          const dublicateEmailError = err;
+          dublicateEmailError.message = `Имейл ${err.keyValue.email} уже зарегистрирован`;
+          dublicateEmailError.statusCode = 400;
+          next(dublicateEmailError);
         } else {
-          res.status(500).send({ message: err.message });
+          next(err);
         }
       });
   }
 };
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch(next);
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user) {
         res.send({ data: user });
       } else {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        throw new CustomError('Пользователь не найден', 404);
       }
     })
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch(next);
 };
 
-module.exports.updateProfile = (req, res) => {
+module.exports.updateProfile = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
@@ -70,13 +72,13 @@ module.exports.updateProfile = (req, res) => {
       if (user) {
         res.send({ data: user });
       } else {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        throw new CustomError('Пользователь не найден', 404);
       }
     })
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch(next);
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
@@ -84,8 +86,8 @@ module.exports.updateAvatar = (req, res) => {
       if (user) {
         res.send({ data: user });
       } else {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        throw new CustomError('Пользователь не найден', 404);
       }
     })
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch(next);
 };
