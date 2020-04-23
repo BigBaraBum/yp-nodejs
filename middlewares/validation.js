@@ -7,12 +7,12 @@ const createCardValidator = celebrate({
   }),
 });
 const cardIdValidator = celebrate({
-  body: Joi.object().keys({
+  params: Joi.object().keys({
     cardId: Joi.string().required(),
   }),
 });
 const userIdValidator = celebrate({
-  body: Joi.object().keys({
+  params: Joi.object().keys({
     userId: Joi.string().required(),
   }),
 });
