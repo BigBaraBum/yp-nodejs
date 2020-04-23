@@ -9,6 +9,7 @@ const cards = require('./routes/cards.js');
 const users = require('./routes/users.js');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth.js');
+const { errorLogger, requestLogger } = require('./middlewares/logger');
 
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(cookieParser());
+app.use(requestLogger);
 
 app.post('/signin', signinValidator, login);
 app.post('/signup', signupValidator, createUser);
@@ -37,6 +39,8 @@ app.use('/users', users);
 app.use('/:any', (req, res) => {
   res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
 });
+
+app.use(errorLogger);
 
 app.use(errors());
 
