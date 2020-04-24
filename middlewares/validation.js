@@ -8,12 +8,12 @@ const createCardValidator = celebrate({
 });
 const cardIdValidator = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().required(),
+    cardId: Joi.string().required().regex(/^[0-9a-fA-F]{24}$/, 'objectId'),
   }),
 });
 const userIdValidator = celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().required(),
+    userId: Joi.string().required().regex(/^[0-9a-fA-F]{24}$/, 'objectId'),
   }),
 });
 const userPatchValidator = celebrate({
